@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리반 감정일기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ 
+<link rel="stylesheet" href="style.css">
+
+<script src="script.js"></script>
+
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
+
+    <div id="appContainer">
+
+        <div id="mainPage" class="container mx-auto px-4 pt-24 pb-16">
+            <div class="text-center mb-12 fade-in">
+                <h1 class="text-4xl font-bold text-gray-800 mb-4">📝 우리반 감정일기</h1>
+                <p class="text-lg text-gray-600">매일매일 내 마음을 기록해보세요</p>
+                <div class="text-sm text-gray-500 mt-2" id="currentDate"></div>
+            </div>
+
+            <div class="max-w-md mx-auto space-y-6">
+                <button onclick="showPage('studentPage')" class="w-full bg-gradient-to-r from-blue-100 to-indigo-100 hover:from-blue-200 hover:to-indigo-200 text-indigo-700 font-semibold py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                    <div class="text-3xl mb-2">🧸</div>
+                    <div class="text-xl">학생용</div>
+                    <div class="text-sm opacity-90 mt-1">감정일기 작성하기</div>
+                </button>
+
+                <button onclick="showPage('friendsPage')" class="w-full bg-gradient-to-r from-green-100 to-emerald-100 hover:from-green-200 hover:to-emerald-200 text-green-800 font-semibold py-6 px-8 rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                    <div class="text-3xl mb-2">👫</div>
+                    <div class="text-xl">친구들 감정 확인하기</div>
+                    <div class="text-sm opacity-90 mt-1">오늘 친구들의 기분은?</div>
+                </button>
+                
+                </div>
+            
+            <p class="text-center text-sm text-gray-500 mt-20">
+                made by 해솔초 심쌤 💜 오색칠반
+            </p>
+
+            <button onclick="showPage('studentLogin')" class="fixed bottom-40 right-6 bg-gradient-to-br from-blue-300 to-indigo-400 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 z-50 flex items-center justify-center">
+                <div class="text-2xl">📊</div>
+            </button>
+            
+            <button onclick="showPage('noteToTeacherPage')" class="fixed right-6 bg-gradient-to-br from-yellow-200 to-gray-300 text-gray-700 w-16 h-16 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 z-50 flex items-center justify-center" style="bottom: 92px;">
+                <div class="text-2xl">💌</div>
+            </button>
+
+
+            <button onclick="showPage('teacherLogin')" class="fixed bottom-6 right-6 bg-gradient-to-br from-purple-300 to-pink-400 text-white w-16 h-16 rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-200 z-50 flex items-center justify-center">
+                <div class="text-2xl">👩‍🏫</div>
+            </button>
+        </div>
+
+        <div id="studentPage" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-xl p-8 fade-in">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800">📝 감정일기 작성</h2>
+                        <button onclick="showPage('mainPage')" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button>
+                    </div>
+
+                    <form id="emotionForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">번호</label>
+                            <select id="studentNumber" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                                <option value="">번호 선택</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-4">오늘의 감정</label>
+
+                            <div class="mb-6"><h4 class="text-sm font-semibold text-green-700 mb-3 flex items-center"><span class="mr-2">🌿</span>긍정적인 감정</h4><div id="positiveEmotions" class="grid grid-cols-5 gap-2"></div></div>
+                            <div class="mb-6"><h4 class="text-sm font-semibold text-red-700 mb-3 flex items-center"><span class="mr-2">🌧</span>부정적인 감정</h4><div id="negativeEmotions" class="grid grid-cols-5 gap-2"></div></div>
+                            <div class="mb-6"><h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center"><span class="mr-2">🌗</span>중립·복합 감정</h4><div id="neutralEmotions" class="grid grid-cols-5 gap-2"></div></div>
+
+                            <div class="mb-4"><button type="button" onclick="showCustomEmotionInput()" class="w-full bg-blue-50 hover:bg-blue-100 border-2 border-dashed border-blue-300 text-blue-700 font-medium py-3 px-4 rounded-xl transition-all duration-200">✏️ 직접 입력하기</button></div>
+                            <div id="customEmotionContainer" class="hidden mb-4"><div class="flex gap-2"><input type="text" id="customEmotionInput" placeholder="감정을 입력하세요 (예: 신남)" class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500"><button type="button" onclick="handleCustomEmotion()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-xl">확인</button><button type="button" onclick="hideCustomEmotionInput()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-xl">취소</button></div></div>
+
+                            <input type="hidden" id="selectedEmotion" required><input type="hidden" id="selectedEmoji" required><input type="hidden" id="selectedCategory">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">감정의 이유</label>
+                            <textarea id="emotionReason" rows="4" required placeholder="오늘 이런 감정을 느낀 이유를 자세히 적어주세요..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                        </div>
+
+                        <div class="space-y-3">
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">💾 감정일기 저장하기</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="noteToTeacherPage" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-xl p-8 fade-in">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800">💌 선생님께 쪽지 보내기</h2>
+                        <button onclick="showPage('mainPage')" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button>
+                    </div>
+                    <p class="text-gray-600 mb-6">선생님께 하고 싶은 이야기, 비밀스러운 고민 등을 적어주세요. 선생님만 볼 수 있어요!</p>
+
+                    <form id="noteForm" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">번호</label>
+                            <select id="noteStudentNumber" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent bg-white">
+                                <option value="">번호 선택</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">쪽지 내용</label>
+                            <textarea id="noteContent" rows="6" required placeholder="선생님께 전할 쪽지 내용을 작성해주세요..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 resize-none"></textarea>
+                        </div>
+
+                        <div class="space-y-3">
+                            <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">💌 쪽지 전송하기</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div id="friendsPage" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-xl p-8 fade-in">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800">👫 친구들 감정 확인하기</h2>
+                        <button onclick="showPage('mainPage')" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button>
+                    </div>
+                    <div class="relative bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl p-8 min-h-[24rem] overflow-hidden">
+                        <div class="text-center mb-6">
+                            <h3 class="text-xl font-bold text-gray-800">🌈 우리반 친구들의 감정</h3>
+                            <p class="text-sm text-gray-600 mt-2">이모티콘을 터치해보세요! </p>
+                        </div>
+                        <div id="floatingEmotions" class="relative w-full h-80"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="studentLogin" class="hidden container mx-auto px-4 py-8">
+            <div class="flex items-center justify-center min-h-screen">
+                <div class="max-w-md w-full">
+                    <div class="bg-white rounded-3xl shadow-xl p-8 fade-in">
+                        <div class="flex items-center justify-between mb-8">
+                            <h2 class="text-2xl font-bold text-gray-800">📊 내 감정 리포트</h2>
+                            <button onclick="showPage('mainPage')" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button>
+                        </div>
+                        <form id="studentLoginForm" class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">번호</label>
+                                <select id="studentLoginNumber" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white">
+                                    <option value="">번호 선택</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">비밀번호 (4자리)</label>
+                                <input type="password" id="studentLoginPassword" required maxlength="4" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500" placeholder="선생님께 받은 4자리 숫자">
+                            </div>
+                            <button type="submit" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition">로그인</button>
+                        </form>
+                        <div id="studentLoginError" class="hidden mt-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-xl text-sm text-center">번호 또는 비밀번호가 올바르지 않습니다.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="teacherLogin" class="hidden container mx-auto px-4 py-8"><div class="flex items-center justify-center min-h-screen"><div class="max-w-md w-full"><div class="bg-white rounded-3xl shadow-xl p-8 fade-in"><div class="flex items-center justify-between mb-8"><h2 class="text-2xl font-bold text-gray-800">🔐 교사 로그인</h2><button onclick="showPage('mainPage')" class="text-gray-500 hover:text-gray-700 text-2xl">✕</button></div><form id="teacherLoginForm" class="space-y-6"><div><label class="block text-sm font-medium text-gray-700 mb-2">비밀번호</label><input type="password" id="teacherPassword" required class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500"></div><button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition" onclick="handleTeacherLogin(event)">로그인</button></form><div id="loginError" class="hidden mt-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-xl text-sm text-center">비밀번호가 올바르지 않습니다.</div></div></div></div></div>
+
+        <div id="teacherDashboard" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
+                    <h1 class="text-3xl font-bold text-gray-800">👩‍🏫 교사 대시보드</h1>
+                    <div class="flex items-center gap-4">
+                        <input type="date" id="dashboardDate" class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="month" id="dashboardMonth" class="hidden px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <button onclick="refreshDashboardData()" id="refreshDataBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg text-sm">새로고침</button>
+                        <button onclick="clearLocalCache()" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg text-sm">로컬 캐시 삭제</button>
+                        <button onclick="logoutTeacher()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg">로그아웃</button>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-200 mb-6">
+                    <nav class="-mb-px flex gap-4" aria-label="Tabs">
+                        <button onclick="switchDashboardTab('daily')" id="dailyTab" class="tab-button whitespace-nowrap py-3 px-5 font-semibold text-gray-500 hover:text-indigo-600 border-b-2 border-transparent">일별 리포트</button>
+                        <button onclick="switchDashboardTab('monthly')" id="monthlyTab" class="tab-button whitespace-nowrap py-3 px-5 font-semibold text-gray-500 hover:text-indigo-600 border-b-2 border-transparent">월별 리포트</button>
+                        <button onclick="switchDashboardTab('notes')" id="notesTab" class="tab-button whitespace-nowrap py-3 px-5 font-semibold text-gray-500 hover:text-indigo-600 border-b-2 border-transparent">학생 쪽지함</button>
+                    </nav>
+                </div>
+
+                <div id="dailyReportContent">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h3 class="font-bold text-gray-600">기록한 학생</h3>
+                            <p id="todaySubmissionCount" class="text-3xl font-bold text-blue-600"></p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h3 class="font-bold text-gray-600">긍정 감정</h3>
+                            <p id="todayPositiveCount" class="text-3xl font-bold text-green-600"></p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h3 class="font-bold text-gray-600">부정 감정</h3>
+                            <p id="todayNegativeCount" class="text-3xl font-bold text-red-600"></p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h2 id="dailyDistributionTitle" class="text-xl font-bold mb-4"></h2>
+                            <div class="chart-container"><canvas id="dailyDistributionChart"></canvas></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-lg">
+                            <h2 id="dailyEntriesTitle" class="text-xl font-bold mb-4"></h2>
+                            <div id="dailyEntriesList" class="space-y-4 max-h-96 overflow-y-auto pr-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow-lg mt-8">
+                        <h2 class="text-xl font-bold mb-4">학생별 리포트 (학생 클릭하여 이동)</h2>
+                        <div id="studentReportLinks" class="grid grid-cols-6 gap-2"> 
+                            </div>
+                    </div>
+                </div>
+
+                <div id="monthlyReportContent" class="hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                           <div class="bg-white p-6 rounded-2xl shadow-lg"><h3 class="font-bold text-gray-600">월 긍정 감정</h3><p id="monthlyPositiveCount" class="text-3xl font-bold text-green-600"></p></div>
+                           <div class="bg-white p-6 rounded-2xl shadow-lg"><h3 class="font-bold text-gray-600">월 중립 감정</h3><p id="monthlyNeutralCount" class="text-3xl font-bold text-yellow-600"></p></div>
+                           <div class="bg-white p-6 rounded-2xl shadow-lg"><h3 class="font-bold text-gray-600">월 부정 감정</h3><p id="monthlyNegativeCount" class="text-3xl font-bold text-red-600"></p></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-2xl shadow-lg"><h2 class="text-xl font-bold mb-4">월별 감정 분포</h2><div class="chart-container"><canvas id="monthlyDistributionChart"></canvas></div></div><div class="bg-white p-6 rounded-2xl shadow-lg"><h2 class="text-xl font-bold mb-4">일별 감정 추이</h2><div class="chart-container"><canvas id="monthlyTrendChart"></canvas></div></div></div>
+                </div>
+                
+                <div id="notesContent" class="hidden">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h2 class="text-xl font-bold mb-4">📮 도착한 쪽지 (최신순)</h2>
+                        <div id="notesList" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+                            <div class="text-center text-gray-500 py-10">로딩 중...</div>
+                        </div>
+                        <div id="notesLoadingError" class="hidden text-red-500 text-center mt-4">쪽지를 불러오지 못했습니다. 새로고침 해주세요.</div>
+                    </div>
+                </div>
+                </div>
+        </div>
+
+        <div id="studentReportPage" class="hidden container mx-auto px-4 py-8">
+            <div class="max-w-4xl mx-auto">
+                   <div id="studentReportHeader">
+                    <div class="flex flex-wrap justify-between items-center mb-8 gap-4">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 mb-2">📊 학생 감정 리포트</h1>
+                            <p id="studentReportNumber" class="text-xl text-gray-600"></p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <input type="month" id="studentReportMonth" class="px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <div id="reportActionButtons" class="flex gap-2">
+                                <button id="dashboardButton" onclick="showPage('teacherDashboard')" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg">대시보드로</button>
+                                <button id="mainPageButton" onclick="showPage('mainPage')" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg">메인으로</button>
+                            </div>
+                         </div>
+                    </div>
+                   </div>
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-600">총 기록 수</div>
+                            <div id="myTotalRecords" class="text-2xl font-bold text-blue-600">0</div>
+                        </div>
+                        <div class="bg-green-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-600">긍정</div>
+                            <div id="myPositiveCount" class="text-2xl font-bold text-green-600">0</div>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-600">중립</div>
+                            <div id="myNeutralCount" class="text-2xl font-bold text-gray-600">0</div>
+                        </div>
+                        <div class="bg-red-50 rounded-xl p-4 text-center">
+                            <div class="text-sm text-gray-600">부정</div>
+                            <div id="myNegativeCount" class="text-2xl font-bold text-red-600">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
+                    <h3 id="candyJarTitle" class="text-xl font-bold text-gray-800 mb-6">🍬 감정 사탕 병 (선택한 달)</h3>
+                    <div class="relative w-full h-[45rem] flex items-center justify-center bg-gray-50 rounded-2xl p-4 overflow-hidden">
+                        
+                        <div class="absolute inset-0 bg-contain bg-no-repeat bg-center" 
+                              style="background-image: url('jar.png'); 
+                                     transform: scale(1.09);"></div>
+
+                        <div id="candyContainer" class="w-full h-full relative overflow-hidden pt-10">
+                            </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
+                    <h3 id="monthlyRecordsTitle" class="text-xl font-bold text-gray-800 mb-6">선택한 달의 전체 기록</h3>
+                    <div id="myRecentRecords" class="space-y-4 max-h-96 overflow-y-auto"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-6">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">선택한 달의 감정 분포</h3>
+                        <div class="chart-container"><canvas id="myEmotionChart"></canvas></div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">선택한 달의 감정 변화</h3>
+                        <div class="chart-container"><canvas id="myTrendChart"></canvas></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">🏆 자주 느끼는 감정 TOP 5 (전체)</h3>
+                    <div id="myTopEmotions" class="space-y-3"></div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">💖 선생님의 한 마디</h3>
+                    <div class="mb-4">
+                        <button id="generateAdviceBtn" onclick="fetchAIAdvice()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold py-3 px-5 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                            조언 생성하기
+                        </button>
+                    </div>
+                    <div id="aiAdvice" class="p-4 bg-purple-50 rounded-lg text-purple-800 min-h-[50px]">
+                        <p class="text-sm text-gray-500">버튼을 눌러 선생님의 격려 메시지를 생성해 보세요.</p>
+                    </div>
+                </div>
+                
+                </div>
+        </div>
+
+        <div id="sharedReportPage" class="hidden"></div>
+
+    </div>
+
+    <div id="categoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1001]">
+        <div class="bg-white p-8 rounded-2xl shadow-xl text-center w-full max-w-sm m-4">
+            <h3 class="font-bold text-xl mb-4">이 감정은 어떤 종류인가요?</h3>
+            <p id="fallbackEmotionText" class="mb-6 text-gray-600"></p>
+            <div class="flex justify-center gap-3">
+                <button onclick="setCustomCategory('positive')" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition">긍정</button>
+                <button onclick="setCustomCategory('negative')" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg font-semibold transition">부정</button>
+                <button onclick="setCustomCategory('neutral')" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition">중립</button>
+            </div>
+        </div>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
+    <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-xl transform transition-all duration-300 opacity-0"></div>
+</body>
+</html>
