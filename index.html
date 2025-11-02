@@ -6,10 +6,16 @@
     <title>우리반 감정일기</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
- 
-<link rel="stylesheet" href="style.css">
-
-<script src="script.js"></script>
+    
+    <link rel="stylesheet" href="style.css"> 
+    
+    <script src="dataManager.js"></script> 
+    <script src="utils.js"></script>
+    <script src="studentLogic.js"></script>
+    <script src="reportLogic.js"></script>
+    <script src="teacherLogic.js"></script>
+    
+    <script src="main.js"></script>
 
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen">
@@ -236,7 +242,7 @@
                            <div class="bg-white p-6 rounded-2xl shadow-lg"><h3 class="font-bold text-gray-600">월 중립 감정</h3><p id="monthlyNeutralCount" class="text-3xl font-bold text-yellow-600"></p></div>
                            <div class="bg-white p-6 rounded-2xl shadow-lg"><h3 class="font-bold text-gray-600">월 부정 감정</h3><p id="monthlyNegativeCount" class="text-3xl font-bold text-red-600"></p></div>
                     </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-2xl shadow-lg"><h2 class="text-xl font-bold mb-4">월별 감정 분포</h2><div class="chart-container"><canvas id="monthlyDistributionChart"></canvas></div></div><div class="bg-white p-6 rounded-2xl shadow-lg"><h2 class="text-xl font-bold mb-4">일별 감정 추이</h2><div class="chart-container"><canvas id="monthlyTrendChart"></canvas></div></div></div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-2xl shadow-lg"><h2 class="text-xl font-bold mb-4">월별 감정 분포</h2><div class="chart-container"><canvas id="monthlyDistributionChart"></canvas></div></div><div class="bg-white rounded-2xl shadow-lg p-6"><h2 class="text-xl font-bold mb-4">일별 감정 추이</h2><div class="chart-container"><canvas id="monthlyTrendChart"></canvas></div></div></div>
                 </div>
                 
                 <div id="notesContent" class="hidden">
@@ -246,9 +252,25 @@
                             <div class="text-center text-gray-500 py-10">로딩 중...</div>
                         </div>
                         <div id="notesLoadingError" class="hidden text-red-500 text-center mt-4">쪽지를 불러오지 못했습니다. 새로고침 해주세요.</div>
+                        
+                        <div id="teacherReplySection" class="mt-8 pt-4 border-t border-gray-200">
+                             <h3 class="text-xl font-bold text-gray-800 mb-4">답장 보내기</h3>
+                             <form id="teacherReplyForm" class="space-y-4">
+                                 <div>
+                                     <label class="block text-sm font-medium text-gray-700 mb-2">대상 학생 번호</label>
+                                     <input type="number" id="replyStudentNumber" required placeholder="학생 번호" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500">
+                                 </div>
+                                 <div>
+                                     <label class="block text-sm font-medium text-gray-700 mb-2">답장 내용</label>
+                                     <textarea id="replyContent" rows="3" required placeholder="학생에게 보낼 답장 내용을 작성해주세요..." class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                                 </div>
+                                 <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition">답장 전송</button>
+                             </form>
+                        </div>
+                        
                     </div>
                 </div>
-                </div>
+                
         </div>
 
         <div id="studentReportPage" class="hidden container mx-auto px-4 py-8">
@@ -268,92 +290,4 @@
                          </div>
                     </div>
                    </div>
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="bg-blue-50 rounded-xl p-4 text-center">
-                            <div class="text-sm text-gray-600">총 기록 수</div>
-                            <div id="myTotalRecords" class="text-2xl font-bold text-blue-600">0</div>
-                        </div>
-                        <div class="bg-green-50 rounded-xl p-4 text-center">
-                            <div class="text-sm text-gray-600">긍정</div>
-                            <div id="myPositiveCount" class="text-2xl font-bold text-green-600">0</div>
-                        </div>
-                        <div class="bg-gray-100 rounded-xl p-4 text-center">
-                            <div class="text-sm text-gray-600">중립</div>
-                            <div id="myNeutralCount" class="text-2xl font-bold text-gray-600">0</div>
-                        </div>
-                        <div class="bg-red-50 rounded-xl p-4 text-center">
-                            <div class="text-sm text-gray-600">부정</div>
-                            <div id="myNegativeCount" class="text-2xl font-bold text-red-600">0</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
-                    <h3 id="candyJarTitle" class="text-xl font-bold text-gray-800 mb-6">🍬 감정 사탕 병 (선택한 달)</h3>
-                    <div class="relative w-full h-[45rem] flex items-center justify-center bg-gray-50 rounded-2xl p-4 overflow-hidden">
-                        
-                        <div class="absolute inset-0 bg-contain bg-no-repeat bg-center" 
-                              style="background-image: url('jar.png'); 
-                                     transform: scale(1.09);"></div>
-
-                        <div id="candyContainer" class="w-full h-full relative overflow-hidden pt-10">
-                            </div>
-                    </div>
-                </div>
-                
-                <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
-                    <h3 id="monthlyRecordsTitle" class="text-xl font-bold text-gray-800 mb-6">선택한 달의 전체 기록</h3>
-                    <div id="myRecentRecords" class="space-y-4 max-h-96 overflow-y-auto"></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 mt-6">
-                    <div class="bg-white rounded-2xl shadow-lg p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">선택한 달의 감정 분포</h3>
-                        <div class="chart-container"><canvas id="myEmotionChart"></canvas></div>
-                    </div>
-                    <div class="bg-white rounded-2xl shadow-lg p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-4">선택한 달의 감정 변화</h3>
-                        <div class="chart-container"><canvas id="myTrendChart"></canvas></div>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">🏆 자주 느끼는 감정 TOP 5 (전체)</h3>
-                    <div id="myTopEmotions" class="space-y-3"></div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
-                    <h3 class="text-xl font-bold text-gray-800 mb-6">💖 선생님의 한 마디</h3>
-                    <div class="mb-4">
-                        <button id="generateAdviceBtn" onclick="fetchAIAdvice()" class="w-full bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold py-3 px-5 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-                            조언 생성하기
-                        </button>
-                    </div>
-                    <div id="aiAdvice" class="p-4 bg-purple-50 rounded-lg text-purple-800 min-h-[50px]">
-                        <p class="text-sm text-gray-500">버튼을 눌러 선생님의 격려 메시지를 생성해 보세요.</p>
-                    </div>
-                </div>
-                
-                </div>
-        </div>
-
-        <div id="sharedReportPage" class="hidden"></div>
-
-    </div>
-
-    <div id="categoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1001]">
-        <div class="bg-white p-8 rounded-2xl shadow-xl text-center w-full max-w-sm m-4">
-            <h3 class="font-bold text-xl mb-4">이 감정은 어떤 종류인가요?</h3>
-            <p id="fallbackEmotionText" class="mb-6 text-gray-600"></p>
-            <div class="flex justify-center gap-3">
-                <button onclick="setCustomCategory('positive')" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition">긍정</button>
-                <button onclick="setCustomCategory('negative')" class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg font-semibold transition">부정</button>
-                <button onclick="setCustomCategory('neutral')" class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition">중립</button>
-            </div>
-        </div>
-    </div>
-    <div id="tooltip" class="tooltip"></div>
-    <div id="toast" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-xl transform transition-all duration-300 opacity-0"></div>
-</body>
-</html>
+                <div class="bg-white rounded-2xl shadow
